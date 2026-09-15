@@ -1,0 +1,64 @@
+# VisionX Multi-Camera Configuration
+cameras:
+  - id: "cam-main-gate"
+    name: "Main Entrance Gate"
+    source: "synthetic" # synthetic, webcam, rtsp://..., /path/to/video.mp4
+    location: "Zone A - Perimeter"
+    target_fps: 25
+    enabled: true
+    model_id: "yolov8m-general"
+    rois:
+      - id: "roi-restricted-gate"
+        name: "Restricted Vehicle Path"
+        type: "restricted_zone"
+        points: [[100, 200], [500, 200], [550, 650], [50, 650]]
+        alert_on_classes: ["person", "car", "truck"]
+    tripwires:
+      - id: "tripwire-entry"
+        name: "Gate Inbound Counter"
+        line: [[200, 450], [700, 450]]
+        direction: "inbound"
+        target_classes: ["person", "car"]
+
+  - id: "cam-warehouse"
+    name: "Warehouse Loading Bay"
+    source: "synthetic"
+    location: "Zone B - Logistics"
+    target_fps: 20
+    enabled: true
+    model_id: "yolov8s-ppe"
+    rois:
+      - id: "roi-hazard-zone"
+        name: "Forklift Active Zone"
+        type: "ppe_inspection"
+        points: [[250, 150], [900, 150], [950, 600], [200, 600]]
+        alert_on_classes: ["person"]
+        required_ppe: ["helmet", "safety_vest"]
+
+  - id: "cam-perimeter"
+    name: "North Fence Perimeter"
+    source: "synthetic"
+    location: "Zone C - Perimeter North"
+    target_fps: 15
+    enabled: true
+    model_id: "yolov8n-general"
+    rois:
+      - id: "roi-fence-buffer"
+        name: "Fence Buffer Zone"
+        type: "intrusion"
+        points: [[50, 300], [1100, 300], [1100, 500], [50, 500]]
+        alert_on_classes: ["person", "car"]
+
+  - id: "cam-assembly"
+    name: "Assembly Line 4"
+    source: "synthetic"
+    location: "Zone D - Shopfloor"
+    target_fps: 30
+    enabled: true
+    model_id: "yolov8s-ppe"
+    rois:
+      - id: "roi-assembly-station"
+        name: "Worker Safety Box"
+        type: "crowd_and_ppe"
+        points: [[300, 200], [800, 200], [800, 550], [300, 550]]
+        alert_on_classes: ["person"]

@@ -1,0 +1,59 @@
+# VisionX System Configuration
+system:
+  name: "VisionX Intelligent Video Analytics"
+  version: "1.0.0"
+  environment: "development"
+  log_level: "INFO"
+  device: "auto" # auto, cpu, cuda:0, mps
+  max_fps: 30
+  frame_width: 1280
+  frame_height: 720
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  cors_origins:
+    - "http://localhost:5173"
+    - "http://localhost:3000"
+    - "http://127.0.0.1:5173"
+    - "http://127.0.0.1:3000"
+  jwt_secret: "visionx-super-secret-key-change-in-production-2026"
+  jwt_algorithm: "HS256"
+  access_token_expire_minutes: 1440
+
+database:
+  url: "sqlite+aiosqlite:///./visionx.db" # Default local zero-config SQLite, or postgresql+asyncpg://visionx:visionxpass@localhost:5432/visionx_db
+  echo: false
+
+redis:
+  url: "redis://localhost:6379/0"
+  enabled: false # Auto-fallback to internal memory cache if Redis is unavailable
+
+tracking:
+  algorithm: "bytetrack" # bytetrack, botsort
+  track_high_thresh: 0.5
+  track_low_thresh: 0.1
+  new_track_thresh: 0.6
+  track_buffer: 30
+  match_thresh: 0.8
+  min_box_area: 10
+
+analytics:
+  intrusion:
+    dwell_grace_period_sec: 1.5
+  loitering:
+    threshold_sec: 10.0
+  crowd:
+    density_threshold: 8
+  speed:
+    default_speed_limit_kmh: 30.0
+    pixels_per_meter: 25.0
+  ppe:
+    required_classes:
+      - "helmet"
+      - "safety_vest"
+    alert_cooldown_sec: 5.0
+
+monitoring:
+  prometheus_enabled: true
+  metrics_port: 8000

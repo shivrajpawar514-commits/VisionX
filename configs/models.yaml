@@ -1,0 +1,69 @@
+# VisionX Model Registry Configuration
+models:
+  - id: "yolov8n-general"
+    name: "YOLOv8 Nano (General)"
+    type: "detection"
+    framework: "ultralytics"
+    precision: "fp32"
+    runtime: "torch"
+    weights_path: "models/pretrained/yolov8n.pt"
+    input_size: [640, 640]
+    confidence_thresh: 0.35
+    iou_thresh: 0.45
+    map50: 0.528
+    map50_95: 0.373
+    avg_fps_cpu: 38.5
+    avg_fps_gpu: 142.0
+    latency_ms: 7.0
+    classes: ["person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "backpack", "umbrella", "handbag", "tie", "suitcase"]
+
+  - id: "yolov8s-ppe"
+    name: "YOLOv8 Small (PPE Safety)"
+    type: "detection"
+    framework: "ultralytics"
+    precision: "fp16"
+    runtime: "torch"
+    weights_path: "models/pretrained/yolov8s_ppe.pt"
+    input_size: [640, 640]
+    confidence_thresh: 0.40
+    iou_thresh: 0.45
+    map50: 0.812
+    map50_95: 0.615
+    avg_fps_cpu: 22.0
+    avg_fps_gpu: 95.0
+    latency_ms: 10.5
+    classes: ["person", "helmet", "no-helmet", "safety_vest", "no-vest", "mask", "no-mask"]
+
+  - id: "yolov8m-general"
+    name: "YOLOv8 Medium (ONNX Optimized)"
+    type: "detection"
+    framework: "onnx"
+    precision: "fp16"
+    runtime: "onnxruntime"
+    weights_path: "models/onnx/yolov8m.onnx"
+    input_size: [640, 640]
+    confidence_thresh: 0.45
+    iou_thresh: 0.45
+    map50: 0.692
+    map50_95: 0.502
+    avg_fps_cpu: 16.0
+    avg_fps_gpu: 78.0
+    latency_ms: 12.8
+    classes: ["person", "car", "truck", "bus", "motorcycle", "bicycle"]
+
+  - id: "yolov8x-tensorrt"
+    name: "YOLOv8 XLarge (TensorRT INT8)"
+    type: "detection"
+    framework: "tensorrt"
+    precision: "int8"
+    runtime: "tensorrt"
+    weights_path: "models/tensorrt/yolov8x_int8.engine"
+    input_size: [640, 640]
+    confidence_thresh: 0.50
+    iou_thresh: 0.45
+    map50: 0.741
+    map50_95: 0.548
+    avg_fps_cpu: 0.0
+    avg_fps_gpu: 185.0
+    latency_ms: 5.4
+    classes: ["person", "car", "truck", "bus", "motorcycle", "bicycle", "helmet", "safety_vest"]
