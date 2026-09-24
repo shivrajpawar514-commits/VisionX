@@ -1,0 +1,34 @@
+{
+  "id": "hitl-1789384162-1",
+  "camera_id": "cam-main-gate",
+  "timestamp": 1789384162.169788,
+  "image_path": null,
+  "original_detections": [
+    {
+      "class_name": "person",
+      "confidence": 0.88,
+      "bbox": [
+        100,
+        200,
+        160,
+        340
+      ]
+    }
+  ],
+  "corrected_detections": [
+    {
+      "class_name": "person",
+      "has_helmet": true,
+      "has_vest": true,
+      "bbox": [
+        100,
+        200,
+        160,
+        340
+      ]
+    }
+  ],
+  "correction_type": "box_adjustment",
+  "operator_notes": "",
+  "status": "pending_review"
+}
