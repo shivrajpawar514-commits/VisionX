@@ -1,0 +1,33 @@
+stages:
+  prepare_data:
+    cmd: python scripts/seed_database.py
+    deps:
+      - configs/cameras.yaml
+      - configs/models.yaml
+    outs:
+      - data/samples
+
+  train_ppe_model:
+    cmd: python training/train.py --epochs 30 --batch 16 --experiment visionx-ppe
+    deps:
+      - training/train.py
+      - configs/config.yaml
+    outs:
+      - models/trained/visionx-ppe
+
+  evaluate_model:
+    cmd: python training/evaluate.py --weights models/trained/visionx-ppe/best.pt
+    deps:
+      - training/evaluate.py
+      - models/trained/visionx-ppe
+    metrics:
+      - metrics.json:
+          cache: false
+
+  export_onnx:
+    cmd: python training/export.py --format onnx --half
+    deps:
+      - training/export.py
+      - models/trained/visionx-ppe
+    outs:
+      - models/onnx
