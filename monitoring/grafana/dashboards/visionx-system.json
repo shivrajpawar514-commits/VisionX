@@ -1,0 +1,39 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "title": "System CPU Usage (%)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [{ "expr": "visionx_system_cpu_usage", "legendFormat": "CPU %" }]
+    },
+    {
+      "title": "GPU Usage (%)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [{ "expr": "visionx_system_gpu_usage", "legendFormat": "GPU %" }]
+    },
+    {
+      "title": "Inference P95 Latency (ms)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [{ "expr": "visionx_inference_p95_latency_ms", "legendFormat": "Latency (ms)" }]
+    },
+    {
+      "title": "Stream Average FPS",
+      "type": "gauge",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [{ "expr": "visionx_fps_gauge", "legendFormat": "FPS" }]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "title": "VisionX - System & Video Pipeline Telemetry",
+  "uid": "visionx-system-telemetry"
+}
