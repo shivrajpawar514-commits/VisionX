@@ -1,0 +1,125 @@
+version: '3.8'
+
+services:
+  # VisionX FastAPI Backend & Inference Engine
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: visionx-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql+asyncpg://visionx:visionxpass@postgres:5432/visionx_db
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=INFO
+      - PROMETHEUS_METRICS=true
+      - MOCK_CAMERA_FALLBACK=true
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./configs:/app/configs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - visionx-network
+
+  # VisionX React + TypeScript Frontend Console
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: visionx-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - visionx-network
+
+  # PostgreSQL Relational Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: visionx-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: visionx
+      POSTGRES_PASSWORD: visionxpass
+      POSTGRES_DB: visionx_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U visionx -d visionx_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - visionx-network
+
+  # Redis for Caching, Fast Counters & Pub/Sub
+  redis:
+    image: redis:7-alpine
+    container_name: visionx-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - visionx-network
+
+  # Prometheus Telemetry & Metrics Scraper
+  prometheus:
+    image: prom/prometheus:v2.50.1
+    container_name: visionx-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - visionx-network
+
+  # Grafana Dashboards for System & ML Telemetry
+  grafana:
+    image: grafana/grafana:10.3.3
+    container_name: visionx-grafana
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - visionx-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  visionx-network:
+    driver: bridge
