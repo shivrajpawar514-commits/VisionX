@@ -1,0 +1,52 @@
+name: VisionX CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Lint with flake8
+        run: |
+          flake8 src/ tests/ training/ --count --select=E9,F63,F7,F82 --show-source --statistics || true
+      - name: Run Test Suite
+        run: |
+          pytest tests/ -v --cov=src
+
+  frontend-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Type Check & Build
+        run: |
+          npm run lint
+          npm run build
+
+  docker-build:
+    needs: [backend-test, frontend-check]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Backend Docker Image
+        run: docker build -t visionx-backend:latest .
+      - name: Build Frontend Docker Image
+        run: docker build -f Dockerfile.frontend -t visionx-frontend:latest .

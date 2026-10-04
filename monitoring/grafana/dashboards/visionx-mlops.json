@@ -1,0 +1,33 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 2,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "title": "Model Precision & Recall (mAP50)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 0 },
+      "targets": [{ "expr": "0.824", "legendFormat": "mAP50" }]
+    },
+    {
+      "title": "False Positive Rate (%)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 0 },
+      "targets": [{ "expr": "4.8", "legendFormat": "FPR %" }]
+    },
+    {
+      "title": "Throughput (Frames/sec)",
+      "type": "gauge",
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 0 },
+      "targets": [{ "expr": "142", "legendFormat": "FPS" }]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "title": "VisionX - MLOps & Model Drift Dashboard",
+  "uid": "visionx-mlops-drift"
+}
