@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: visionx-backend-svc
+spec:
+  selector:
+    app: visionx-backend
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visionx-frontend-svc
+spec:
+  selector:
+    app: visionx-frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP

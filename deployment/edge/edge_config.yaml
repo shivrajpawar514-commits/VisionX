@@ -1,0 +1,12 @@
+# VisionX Edge AI Deployment Profile
+edge_node:
+  node_id: "jetson-edge-01"
+  site: "Loading Dock North"
+  runtime: "tensorrt"
+  model_path: "models/tensorrt/yolov8s_int8.engine"
+  input_resolution: [640, 640]
+  stream_source: "rtsp://192.168.1.120:554/live"
+  cloud_backend_url: "http://central-visionx.domain.com:8000/api/v1"
+  send_video_frames: false # Lightweight: stream structured metadata & alert triggers only
+  save_violation_crops: true
+  telemetry_interval_sec: 5.0
