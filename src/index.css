@@ -12,59 +12,77 @@
 
 html, body, #root {
   height: 100%;
+  overflow: hidden;
 }
 
 body {
   margin: 0;
-  background: #0B1414;
-  color: #E8F0EE;
-  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  background: #070A0F;
+  color: #F8FAFC;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: #3DDC97;
-  color: #0B1414;
+  background: #10B981;
+  color: #070A0F;
 }
 
-/* Scrollbars kept thin and quiet — this is a console people stare at all day */
+/* Custom Sleek Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(7, 10, 15, 0.5);
 }
 ::-webkit-scrollbar-thumb {
-  background: #24403D;
-  border-radius: 4px;
+  background: #1E293B;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #315650;
+  background: #334155;
 }
 
-/* Visible keyboard focus, always */
+/* Visible keyboard focus */
 :focus-visible {
-  outline: 2px solid #3DDC97;
+  outline: 2px solid #06B6D4;
   outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
 }
 
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
+/* Glassmorphism card utilities */
+.glass-panel {
+  background: rgba(11, 16, 23, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glass-panel-hover {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-panel-hover:hover {
+  border-color: rgba(6, 182, 212, 0.3);
+  box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.15);
+}
+
+/* Synthetic camera grid pattern */
+.grid-pattern {
+  background-size: 30px 30px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
 .scan-pulse {
-  animation: scan-pulse 2.4s ease-in-out infinite;
+  animation: scan-pulse 2s ease-in-out infinite;
 }
 @keyframes scan-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.92); }
 }
+
