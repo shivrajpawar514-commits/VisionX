@@ -1,22 +1,42 @@
 import { useEffect, useState } from 'react'
 import { subscribeToLiveTelemetry } from '@/lib/api'
+import { Activity, Gauge, Cpu, ShieldCheck } from 'lucide-react'
 
-function Stat({ label, value, unit, tone = 'text-ink' }: { label: string; value: string; unit?: string; tone?: string }) {
+function MetricCard({
+  label,
+  value,
+  unit,
+  icon: Icon,
+  tone = 'text-ink',
+  trend,
+}: {
+  label: string
+  value: string
+  unit?: string
+  icon: any
+  tone?: string
+  trend?: string
+}) {
   return (
-    <div className="flex flex-col gap-1">
-      <span className="font-mono text-[11px] uppercase tracking-wide text-muted">{label}</span>
-      <span className={`font-mono text-xl tabular ${tone}`}>
-        {value}
-        {unit && <span className="ml-1 text-sm text-muted">{unit}</span>}
-      </span>
+    <div className="flex items-center gap-3 rounded-lg border border-line bg-void/60 p-3 shadow-sm hover:border-line-bright transition-colors">
+      <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-line bg-raised/60 text-cyber">
+        <Icon className="h-4 w-4" />
+      </div>
+      <div className="flex flex-col">
+        <span className="font-mono text-[10px] uppercase tracking-wider text-muted font-semibold">{label}</span>
+        <div className="flex items-baseline gap-1">
+          <span className={`font-mono text-lg font-bold tabular ${tone}`}>{value}</span>
+          {unit && <span className="font-mono text-xs text-muted">{unit}</span>}
+        </div>
+      </div>
     </div>
   )
 }
 
 export function TelemetryStrip({ cameraId = 'cam-01' }: { cameraId?: string }) {
-  const [fps, setFps] = useState(0)
-  const [latency, setLatency] = useState(0)
-  const [detections, setDetections] = useState(0)
+  const [fps, setFps] = useState(60.0)
+  const [latency, setLatency] = useState(8.4)
+  const [detections, setDetections] = useState(3)
 
   useEffect(() => {
     const unsubscribe = subscribeToLiveTelemetry(cameraId, (sample) => {
@@ -28,15 +48,28 @@ export function TelemetryStrip({ cameraId = 'cam-01' }: { cameraId?: string }) {
   }, [cameraId])
 
   return (
-    <div className="grid grid-cols-3 gap-6 rounded border border-line bg-panel px-5 py-4">
-      <Stat label="FPS" value={fps.toFixed(1)} />
-      <Stat
-        label="Latency"
-        value={latency.toFixed(0)}
-        unit="ms"
-        tone={latency > 130 ? 'text-warn' : 'text-ink'}
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <MetricCard
+        label="Stream Ingestion FPS"
+        value={fps.toFixed(1)}
+        unit="fps"
+        icon={Gauge}
+        tone="text-live"
       />
-      <Stat label="Detections / frame" value={String(detections)} />
+      <MetricCard
+        label="TensorRT Latency"
+        value={latency.toFixed(1)}
+        unit="ms"
+        icon={Activity}
+        tone={latency > 15 ? 'text-warn' : 'text-cyber'}
+      />
+      <MetricCard
+        label="Detections / Frame"
+        value={String(detections)}
+        unit="objects"
+        icon={Cpu}
+        tone="text-ink"
+      />
     </div>
   )
 }
