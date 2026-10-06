@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { api } from '@/lib/api'
 import type { HeatmapCell } from '@/types'
-import { Flame, Layers } from 'lucide-react'
+import { Flame, Camera } from 'lucide-react'
 
 function mix(intensity: number): string {
   const stops = [
@@ -30,10 +30,11 @@ function mix(intensity: number): string {
 export function Heatmap({ cameraId = 'cam-01' }: { cameraId?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [cells, setCells] = useState<HeatmapCell[]>([])
+  const [selectedCam, setSelectedCam] = useState(cameraId)
 
   useEffect(() => {
-    api.getHeatmap(cameraId).then(setCells)
-  }, [cameraId])
+    api.getHeatmap(selectedCam).then(setCells)
+  }, [selectedCam])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -76,18 +77,40 @@ export function Heatmap({ cameraId = 'cam-01' }: { cameraId?: string }) {
     ctx.globalAlpha = 1
   }, [cells])
 
+  const maxIntensity = cells.length > 0 ? Math.max(...cells.map((c) => c.intensity)) : 0
+
   return (
-    <div className="relative overflow-hidden rounded-xl border border-line bg-void">
-      <canvas ref={canvasRef} width={480} height={270} className="block w-full" />
-      <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between rounded-md bg-void/80 border border-line px-2.5 py-1 text-[10px] font-mono text-muted backdrop-blur-md">
-        <div className="flex items-center gap-1.5 text-cyber">
-          <Flame className="h-3 w-3 text-alert" />
-          <span>Spatial Density Matrix</span>
+    <div className="space-y-2">
+      {/* Selector Bar */}
+      <div className="flex items-center justify-between text-xs font-mono">
+        <div className="flex items-center gap-1.5 text-muted">
+          <Camera className="h-3.5 w-3.5 text-cyber" />
+          <span>Stream:</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span>0%</span>
-          <div className="h-1.5 w-16 rounded-full bg-gradient-to-r from-cyber via-live to-alert" />
-          <span>100%</span>
+        <select
+          value={selectedCam}
+          onChange={(e) => setSelectedCam(e.target.value)}
+          className="rounded border border-line bg-void px-2 py-0.5 text-xs text-cyber focus:outline-none"
+        >
+          <option value="cam-01">CAM-01 Main Entrance</option>
+          <option value="cam-02">CAM-02 Loading Bay</option>
+          <option value="cam-03">CAM-03 North Fence</option>
+          <option value="cam-04">CAM-04 Server Room</option>
+        </select>
+      </div>
+
+      <div className="relative overflow-hidden rounded-xl border border-line bg-void">
+        <canvas ref={canvasRef} width={480} height={270} className="block w-full" />
+        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between rounded-md bg-void/80 border border-line px-2.5 py-1 text-[10px] font-mono text-muted backdrop-blur-md">
+          <div className="flex items-center gap-1.5 text-cyber">
+            <Flame className="h-3 w-3 text-alert" />
+            <span>Peak Density: {(maxIntensity * 100).toFixed(0)}%</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span>Low</span>
+            <div className="h-1.5 w-16 rounded-full bg-gradient-to-r from-cyber via-live to-alert" />
+            <span>High</span>
+          </div>
         </div>
       </div>
     </div>
