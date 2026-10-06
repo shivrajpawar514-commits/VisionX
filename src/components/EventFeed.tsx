@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import type { AnalyticsEvent, EventSeverity } from '@/types'
+import { AlertTriangle, Info, ShieldAlert, Check } from 'lucide-react'
 
-const severityColor: Record<EventSeverity, string> = {
-  critical: 'bg-alert',
-  warning: 'bg-warn',
-  info: 'bg-data',
+const severityConfig: Record<EventSeverity, { badgeStyle: string; icon: any }> = {
+  critical: { badgeStyle: 'bg-alert/20 text-alert border-alert/30', icon: ShieldAlert },
+  warning: { badgeStyle: 'bg-warn/20 text-warn border-warn/30', icon: AlertTriangle },
+  info: { badgeStyle: 'bg-cyber/20 text-cyber border-cyber/30', icon: Info },
 }
 
 function timeAgo(isoOrTimestamp: string | number) {
@@ -37,28 +38,52 @@ export function EventFeed({
   }
 
   if (visible.length === 0) {
-    return <p className="text-sm text-muted">No events in the current window.</p>
+    return <p className="py-6 text-center text-xs text-muted">No security events recorded in window.</p>
   }
 
   return (
-    <ul className="flex flex-col divide-y divide-line">
-      {visible.map((e) => (
-        <li key={e.id} className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
-          <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${severityColor[e.severity] || 'bg-data'}`} />
-          <div className="min-w-0 flex-1">
-            <p className={`text-sm ${e.acknowledged ? 'text-muted' : 'text-ink'}`}>{e.message || e.title || e.description}</p>
-            <p className="mt-0.5 font-mono text-[11px] text-muted">{timeAgo(e.timestamp)}</p>
+    <div className="space-y-2.5">
+      {visible.map((e) => {
+        const config = severityConfig[e.severity] || severityConfig.info
+        const Icon = config.icon
+        return (
+          <div
+            key={e.id}
+            className={`group relative flex items-start gap-3 rounded-lg border p-3 transition-all ${
+              e.acknowledged
+                ? 'border-line/60 bg-void/40 opacity-60'
+                : 'border-line bg-void/80 hover:border-line-bright shadow-sm'
+            }`}
+          >
+            <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md border ${config.badgeStyle}`}>
+              <Icon className="h-3.5 w-3.5" />
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-mono text-[11px] font-semibold text-ink">
+                  {e.cameraName || 'CAM-01'}
+                </span>
+                <span className="font-mono text-[10px] text-muted">{timeAgo(e.timestamp)}</span>
+              </div>
+              <p className={`mt-0.5 text-xs ${e.acknowledged ? 'text-muted line-through' : 'text-slate-200'}`}>
+                {e.message || e.title || e.description}
+              </p>
+            </div>
+
+            {!e.acknowledged && (
+              <button
+                onClick={() => ack(e.id)}
+                className="shrink-0 rounded border border-line bg-raised px-2 py-1 font-mono text-[10px] text-muted hover:border-live hover:text-live transition-colors flex items-center gap-1"
+                title="Acknowledge alert"
+              >
+                <Check className="h-3 w-3" />
+                <span>Ack</span>
+              </button>
+            )}
           </div>
-          {!e.acknowledged && (
-            <button
-              onClick={() => ack(e.id)}
-              className="shrink-0 rounded border border-line px-2 py-1 text-[11px] text-muted hover:border-live hover:text-live font-mono"
-            >
-              Ack
-            </button>
-          )}
-        </li>
-      ))}
-    </ul>
+        )
+      })}
+    </div>
   )
 }
