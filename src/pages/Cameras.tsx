@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import { TopBar } from '@/components/layout/TopBar'
 import { Panel } from '@/components/Panel'
 import { LiveFeed } from '@/components/LiveFeed'
+import { RoiModal } from '@/components/RoiModal'
 import { api } from '@/lib/api'
 import type { Camera, CameraStatus, ModelInfo } from '@/types'
-import { Radio, Sliders, ShieldCheck, Cpu, HardDrive, Eye } from 'lucide-react'
+import { Radio, Sliders, ShieldCheck, Cpu, HardDrive, Eye, Target } from 'lucide-react'
 
 const statusStyle: Record<CameraStatus, string> = {
   online: 'text-live border-live/40 bg-live/10 shadow-glow-live',
@@ -15,13 +16,10 @@ const statusStyle: Record<CameraStatus, string> = {
 export function Cameras() {
   const [cameras, setCameras] = useState<Camera[]>([])
   const [models, setModels] = useState<ModelInfo[]>([])
-  const [activeCamTab, setActiveCamTab] = useState<string | null>(null)
+  const [activeRoiCam, setActiveRoiCam] = useState<string | null>(null)
 
   useEffect(() => {
-    api.getCameras().then((cams) => {
-      setCameras(cams)
-      if (cams.length > 0) setActiveCamTab(cams[0].id)
-    })
+    api.getCameras().then(setCameras)
     api.getModels().then(setModels)
   }, [])
 
@@ -43,9 +41,18 @@ export function Cameras() {
               key={cam.id}
               label={cam.name}
               action={
-                <span className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase font-semibold ${statusStyle[cam.status]}`}>
-                  {cam.status}
-                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setActiveRoiCam(cam.name)}
+                    className="flex items-center gap-1 rounded-md border border-line bg-void px-2.5 py-1 font-mono text-[10px] text-muted hover:text-cyber hover:border-cyber/50 transition-colors"
+                  >
+                    <Target className="h-3 w-3" />
+                    <span>ROI / Tripwire</span>
+                  </button>
+                  <span className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase font-semibold ${statusStyle[cam.status]}`}>
+                    {cam.status}
+                  </span>
+                </div>
               }
             >
               <div className="space-y-4">
@@ -99,6 +106,12 @@ export function Cameras() {
           ))}
         </div>
       </div>
+
+      <RoiModal
+        isOpen={Boolean(activeRoiCam)}
+        onClose={() => setActiveRoiCam(null)}
+        cameraName={activeRoiCam || 'Camera'}
+      />
     </>
   )
 }
