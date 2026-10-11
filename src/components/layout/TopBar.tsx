@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { VideoSummarizerModal } from '@/components/VideoSummarizerModal'
 import { HITLCorrectionModal } from '@/components/HITLCorrectionModal'
+import { AudioAlertSettingsModal } from '@/components/AudioAlertSettingsModal'
+import { StreamSnapshotGalleryModal } from '@/components/StreamSnapshotGalleryModal'
 import { CommandPalette } from '@/components/CommandPalette'
 import { USE_MOCK, setUseMock } from '@/lib/api'
 import {
@@ -10,13 +12,15 @@ import {
   Radio,
   Clock,
   Bell,
-  Sliders,
+  Camera,
 } from 'lucide-react'
 
 export function TopBar({ title, subtitle }: { title: string; subtitle?: string }) {
   const [now, setNow] = useState(new Date())
   const [summarizerOpen, setSummarizerOpen] = useState(false)
   const [hitlOpen, setHitlOpen] = useState(false)
+  const [audioOpen, setAudioOpen] = useState(false)
+  const [galleryOpen, setGalleryOpen] = useState(false)
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
   const [isMock, setIsMock] = useState(USE_MOCK)
 
@@ -78,6 +82,24 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string }
             <span className="hidden sm:inline">HITL Feedback</span>
           </button>
 
+          {/* Gallery Button */}
+          <button
+            onClick={() => setGalleryOpen(true)}
+            className="flex items-center justify-center h-8 w-8 rounded-lg border border-line bg-void/80 text-muted hover:text-cyber hover:border-cyber/40 transition-colors"
+            title="Stream Snapshots Gallery"
+          >
+            <Camera className="h-4 w-4" />
+          </button>
+
+          {/* Audio Chime Button */}
+          <button
+            onClick={() => setAudioOpen(true)}
+            className="flex items-center justify-center h-8 w-8 rounded-lg border border-line bg-void/80 text-muted hover:text-cyber hover:border-cyber/40 transition-colors"
+            title="Audio Alarm Settings"
+          >
+            <Bell className="h-4 w-4" />
+          </button>
+
           {/* Backend Mode Toggle */}
           <button
             onClick={toggleMock}
@@ -103,6 +125,8 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string }
       <CommandPalette isOpen={commandPaletteOpen} onClose={() => setCommandPaletteOpen(false)} />
       <VideoSummarizerModal isOpen={summarizerOpen} onClose={() => setSummarizerOpen(false)} />
       <HITLCorrectionModal isOpen={hitlOpen} onClose={() => setHitlOpen(false)} />
+      <AudioAlertSettingsModal isOpen={audioOpen} onClose={() => setAudioOpen(false)} />
+      <StreamSnapshotGalleryModal isOpen={galleryOpen} onClose={() => setGalleryOpen(false)} />
     </>
   )
 }
