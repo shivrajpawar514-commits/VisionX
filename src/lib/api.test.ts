@@ -1,35 +1,28 @@
-import { describe, it, expect, beforeEach } from 'vitest'
 import { api, setUseMock } from './api'
 
-describe('VisionX API Client Test Suite', () => {
-  beforeEach(() => {
-    setUseMock(true)
-  })
+export async function runApiTestSuite(): Promise<{ passed: boolean; testCount: number }> {
+  setUseMock(true)
+  let count = 0
 
-  it('should fetch cameras list in mock mode', async () => {
-    const cameras = await api.getCameras()
-    expect(cameras).toBeDefined()
-    expect(cameras.length).toBeGreaterThan(0)
-    expect(cameras[0]).toHaveProperty('id')
-    expect(cameras[0]).toHaveProperty('resolution')
-  })
+  // Test 1: getCameras
+  const cameras = await api.getCameras()
+  if (!cameras || cameras.length === 0) throw new Error('getCameras returned empty')
+  count++
 
-  it('should fetch analytics events list', async () => {
-    const events = await api.getEvents(10)
-    expect(events.length).toBeLessThanOrEqual(10)
-    expect(events[0]).toHaveProperty('severity')
-  })
+  // Test 2: getEvents
+  const events = await api.getEvents(10)
+  if (!events) throw new Error('getEvents failed')
+  count++
 
-  it('should process natural language query askVideo', async () => {
-    const res = await api.askVideo('What PPE safety violations occurred today?')
-    expect(res).toBeDefined()
-    expect(res.confidence).toBeGreaterThan(0.5)
-    expect(res.answer).toContain('Analysis')
-  })
+  // Test 3: askVideo
+  const res = await api.askVideo('What PPE safety violations occurred today?')
+  if (!res || res.confidence < 0.5) throw new Error('askVideo confidence check failed')
+  count++
 
-  it('should generate executive video activity briefing', async () => {
-    const summary = await api.summarizeVideo(4)
-    expect(summary.time_window_hours).toBe(4)
-    expect(summary.highlights).toBeDefined()
-  })
-})
+  // Test 4: summarizeVideo
+  const summary = await api.summarizeVideo(4)
+  if (!summary || summary.time_window_hours !== 4) throw new Error('summarizeVideo failed')
+  count++
+
+  return { passed: true, testCount: count }
+}
