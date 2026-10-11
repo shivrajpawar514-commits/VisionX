@@ -6,6 +6,7 @@ import { StreamSnapshotGalleryModal } from '@/components/StreamSnapshotGalleryMo
 import { NetworkBandwidthMonitorModal } from '@/components/NetworkBandwidthMonitorModal'
 import { SystemLogsModal } from '@/components/SystemLogsModal'
 import { EdgeHardwareMetricsModal } from '@/components/EdgeHardwareMetricsModal'
+import { ThreatMatrixModal } from '@/components/ThreatMatrixModal'
 import { CommandPalette } from '@/components/CommandPalette'
 import { USE_MOCK, setUseMock } from '@/lib/api'
 import {
@@ -19,6 +20,7 @@ import {
   Wifi,
   Terminal,
   Cpu,
+  ShieldAlert,
 } from 'lucide-react'
 
 export function TopBar({ title, subtitle }: { title: string; subtitle?: string }) {
@@ -30,6 +32,7 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string }
   const [networkOpen, setNetworkOpen] = useState(false)
   const [logsOpen, setLogsOpen] = useState(false)
   const [gpuOpen, setGpuOpen] = useState(false)
+  const [threatOpen, setThreatOpen] = useState(false)
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
   const [isMock, setIsMock] = useState(USE_MOCK)
 
@@ -71,6 +74,16 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string }
             <kbd className="hidden md:inline-block rounded border border-line bg-raised px-1.5 py-0.5 font-mono text-[10px] text-muted">
               ⌘K
             </kbd>
+          </button>
+
+          {/* Threat Matrix Button */}
+          <button
+            onClick={() => setThreatOpen(true)}
+            className="flex items-center gap-1.5 rounded-lg border border-alert/40 bg-alert/10 px-3 py-1.5 font-mono text-xs text-alert hover:bg-alert/20 hover:border-alert/60 shadow-glow-alert transition-all"
+            title="Threat Matrix & Security Risk Assessment"
+          >
+            <ShieldAlert className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Threat Index</span>
           </button>
 
           {/* AI Summarizer Button */}
@@ -166,6 +179,7 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string }
       <NetworkBandwidthMonitorModal isOpen={networkOpen} onClose={() => setNetworkOpen(false)} />
       <SystemLogsModal isOpen={logsOpen} onClose={() => setLogsOpen(false)} />
       <EdgeHardwareMetricsModal isOpen={gpuOpen} onClose={() => setGpuOpen(false)} />
+      <ThreatMatrixModal isOpen={threatOpen} onClose={() => setThreatOpen(false)} />
     </>
   )
 }
