@@ -9,14 +9,19 @@
 [![ONNX Runtime](https://img.shields.io/badge/ONNX-FP16%20%7C%20INT8-blue.svg)](https://onnxruntime.ai/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ed.svg)](https://www.docker.com/)
 
-**VisionX** is a production-grade, distributed real-time computer vision platform designed for intelligent security, industrial workplace safety (PPE), and smart traffic monitoring. It combines YOLO object detection, ByteTrack multi-object tracking, spatial event analytics, natural-language video interrogation, MLOps retraining pipelines, and a high-performance React + TypeScript control room console.
+**VisionX** is a production-grade, distributed real-time computer vision platform designed for intelligent security, industrial workplace safety (PPE), and smart traffic monitoring. It combines YOLO object detection, ByteTrack multi-object tracking, spatial event analytics, natural-language video interrogation, MLOps retraining pipelines, and an ultra-modern obsidian cyber React + TypeScript control room console (`⌘K` Command Palette, PTZ Joystick Controls, Synthetic CCTV Stream Generator).
 
 ---
 
 ## 🌟 Key Features
 
-### 1. Multi-Stream Video Ingestion & Stream Health
-- Ingest from **Webcams, RTSP/IP cameras, CCTV streams, video files**, or the zero-setup **Synthetic Video Simulator**.
+### 1. Ultra-Modern Obsidian Cyber Dashboard & Control Room
+- **Obsidian Cyber Theme**: Glassmorphism dark mode with high-density status gauges, spatial density matrix heatmaps, and customizable 2x2 camera grid layout.
+- **`⌘K` Command Palette**: Instant keyboard shortcut search for jumping between streams, camera settings, and analytics pages.
+- **Interactive PTZ Joystick Controls**: ONVIF Profile S Pan-Tilt-Zoom joystick control modal with zoom level sliders and preset position manager.
+
+### 2. Multi-Stream Video Ingestion & Synthetic Stream Engine
+- Ingest from **Webcams, RTSP/IP cameras, CCTV streams, video files**, or the zero-setup **Synthetic Video Simulator** (animated radar crosshairs, perimeter tripwires, and bounding box velocity vectors).
 - Sub-frame buffering (`FrameBuffer`) with automatic frame-drop protection and real-time telemetry (FPS, bitrate, codec, dropped frames, decoder latency).
 
 ### 2. Multi-Backend YOLO Detection Engine
