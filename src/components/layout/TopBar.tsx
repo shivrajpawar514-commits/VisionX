@@ -3,6 +3,8 @@ import { VideoSummarizerModal } from '@/components/VideoSummarizerModal'
 import { HITLCorrectionModal } from '@/components/HITLCorrectionModal'
 import { AudioAlertSettingsModal } from '@/components/AudioAlertSettingsModal'
 import { StreamSnapshotGalleryModal } from '@/components/StreamSnapshotGalleryModal'
+import { NetworkBandwidthMonitorModal } from '@/components/NetworkBandwidthMonitorModal'
+import { SystemLogsModal } from '@/components/SystemLogsModal'
 import { CommandPalette } from '@/components/CommandPalette'
 import { USE_MOCK, setUseMock } from '@/lib/api'
 import {
@@ -13,6 +15,8 @@ import {
   Clock,
   Bell,
   Camera,
+  Wifi,
+  Terminal,
 } from 'lucide-react'
 
 export function TopBar({ title, subtitle }: { title: string; subtitle?: string }) {
@@ -21,6 +25,8 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string }
   const [hitlOpen, setHitlOpen] = useState(false)
   const [audioOpen, setAudioOpen] = useState(false)
   const [galleryOpen, setGalleryOpen] = useState(false)
+  const [networkOpen, setNetworkOpen] = useState(false)
+  const [logsOpen, setLogsOpen] = useState(false)
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
   const [isMock, setIsMock] = useState(USE_MOCK)
 
@@ -82,6 +88,24 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string }
             <span className="hidden sm:inline">HITL Feedback</span>
           </button>
 
+          {/* Network Observability Button */}
+          <button
+            onClick={() => setNetworkOpen(true)}
+            className="flex items-center justify-center h-8 w-8 rounded-lg border border-line bg-void/80 text-muted hover:text-cyber hover:border-cyber/40 transition-colors"
+            title="RTSP Network & Bitrate Monitor"
+          >
+            <Wifi className="h-4 w-4" />
+          </button>
+
+          {/* System Logs Terminal Button */}
+          <button
+            onClick={() => setLogsOpen(true)}
+            className="flex items-center justify-center h-8 w-8 rounded-lg border border-line bg-void/80 text-muted hover:text-cyber hover:border-cyber/40 transition-colors"
+            title="System Audit & Diagnostic Logs"
+          >
+            <Terminal className="h-4 w-4" />
+          </button>
+
           {/* Gallery Button */}
           <button
             onClick={() => setGalleryOpen(true)}
@@ -127,6 +151,8 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string }
       <HITLCorrectionModal isOpen={hitlOpen} onClose={() => setHitlOpen(false)} />
       <AudioAlertSettingsModal isOpen={audioOpen} onClose={() => setAudioOpen(false)} />
       <StreamSnapshotGalleryModal isOpen={galleryOpen} onClose={() => setGalleryOpen(false)} />
+      <NetworkBandwidthMonitorModal isOpen={networkOpen} onClose={() => setNetworkOpen(false)} />
+      <SystemLogsModal isOpen={logsOpen} onClose={() => setLogsOpen(false)} />
     </>
   )
 }
