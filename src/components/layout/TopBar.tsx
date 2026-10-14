@@ -5,6 +5,7 @@ import { AudioAlertSettingsModal } from '@/components/AudioAlertSettingsModal'
 import { StreamSnapshotGalleryModal } from '@/components/StreamSnapshotGalleryModal'
 import { NetworkBandwidthMonitorModal } from '@/components/NetworkBandwidthMonitorModal'
 import { SystemLogsModal } from '@/components/SystemLogsModal'
+import { EdgeHardwareMetricsModal } from '@/components/EdgeHardwareMetricsModal'
 import { CommandPalette } from '@/components/CommandPalette'
 import { USE_MOCK, setUseMock } from '@/lib/api'
 import {
@@ -17,6 +18,7 @@ import {
   Camera,
   Wifi,
   Terminal,
+  Cpu,
 } from 'lucide-react'
 
 export function TopBar({ title, subtitle }: { title: string; subtitle?: string }) {
@@ -27,6 +29,7 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string }
   const [galleryOpen, setGalleryOpen] = useState(false)
   const [networkOpen, setNetworkOpen] = useState(false)
   const [logsOpen, setLogsOpen] = useState(false)
+  const [gpuOpen, setGpuOpen] = useState(false)
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
   const [isMock, setIsMock] = useState(USE_MOCK)
 
@@ -86,6 +89,15 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string }
           >
             <Target className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">HITL Feedback</span>
+          </button>
+
+          {/* GPU Hardware Sensors Button */}
+          <button
+            onClick={() => setGpuOpen(true)}
+            className="flex items-center justify-center h-8 w-8 rounded-lg border border-line bg-void/80 text-muted hover:text-cyber hover:border-cyber/40 transition-colors"
+            title="NVIDIA GPU Hardware Sensors"
+          >
+            <Cpu className="h-4 w-4" />
           </button>
 
           {/* Network Observability Button */}
@@ -153,6 +165,7 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string }
       <StreamSnapshotGalleryModal isOpen={galleryOpen} onClose={() => setGalleryOpen(false)} />
       <NetworkBandwidthMonitorModal isOpen={networkOpen} onClose={() => setNetworkOpen(false)} />
       <SystemLogsModal isOpen={logsOpen} onClose={() => setLogsOpen(false)} />
+      <EdgeHardwareMetricsModal isOpen={gpuOpen} onClose={() => setGpuOpen(false)} />
     </>
   )
 }
